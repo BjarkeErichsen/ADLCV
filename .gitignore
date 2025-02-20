@@ -1,0 +1,10 @@
+# Ignore everything inside any folder named 'adta'
+data/
+**/data/
+
+# Do not ignore .pth files
+*.pth
+**/*.pth
+
+# Do not ignore __pycache__ directories
+**/__pycache__/
