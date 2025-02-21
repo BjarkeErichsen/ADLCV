@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 import torch
+import os
 from transformer import Attention, PositionalEncoding, TransformerClassifier
 from text_classification import prepare_data_iter, set_seed
 
@@ -34,7 +35,7 @@ def test_transformer(batch_size=16, seq_len=512, num_classes=2, device='cpu'):
     print(f'input sequence shape: {inpput_seq.shape}')
     print(f'classifier output shape: {output.shape}')
 
-def test_positional_encoding(embed_dim=128, max_seq_len=512):
+def test_positional_encoding(embed_dim=128, max_seq_len=512, save_path="figures/positional_encoding.png"):
 
     plt.figure(figsize=(10, 6))
 
@@ -50,12 +51,23 @@ def test_positional_encoding(embed_dim=128, max_seq_len=512):
     sns.heatmap(positions.squeeze(0), cmap=sns.color_palette("viridis", as_cmap=True))
     plt.xlabel('Dimension')
     plt.ylabel('Position in the sequence')
-    plt.gca().invert_yaxis()
+    # plt.gca().invert_yaxis()
+
+    # Ensure directory exists
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+
+    # Save the figure
+    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    print(f"Figure saved to {save_path}")
+
+    # Show the plot (optional)
     plt.show()
+
+
 
     
 if __name__ == '__main__':
-    print("startedd")
+    print("started")
     set_seed(5)
     train_iter, _ = prepare_data_iter(batch_size=2)
     batch = next(iter(train_iter))

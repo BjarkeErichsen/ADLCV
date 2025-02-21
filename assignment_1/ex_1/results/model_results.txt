@@ -1,0 +1,40 @@
+Model 1: {'embed_dim': 128, 'num_heads': 4, 'num_layers': 4}
+  Final Accuracy over 2 runs: Mean = 0.712, Std = 0.021
+  95% Confidence Interval: [0.683, 0.740]
+
+Model 2: {'embed_dim': 256, 'num_heads': 4, 'num_layers': 4}
+  Final Accuracy over 2 runs: Mean = 0.768, Std = 0.003
+  95% Confidence Interval: [0.764, 0.771]
+
+Model 3: {'embed_dim': 128, 'num_heads': 8, 'num_layers': 4}
+  Final Accuracy over 2 runs: Mean = 0.702, Std = 0.023
+  95% Confidence Interval: [0.669, 0.734]
+
+Model 4: {'embed_dim': 128, 'num_heads': 4, 'num_layers': 6}
+  Final Accuracy over 2 runs: Mean = 0.745, Std = 0.003
+  95% Confidence Interval: [0.741, 0.749]
+
+Model 5: {'embed_dim': 256, 'num_heads': 8, 'num_layers': 4}
+  Final Accuracy over 2 runs: Mean = 0.767, Std = 0.008
+  95% Confidence Interval: [0.756, 0.778]
+
+Model 6: {'embed_dim': 256, 'num_heads': 4, 'num_layers': 6}
+  Final Accuracy over 2 runs: Mean = 0.791, Std = 0.023
+  95% Confidence Interval: [0.759, 0.823]
+
+Model 7: {'embed_dim': 128, 'num_heads': 8, 'num_layers': 6}
+  Final Accuracy over 2 runs: Mean = 0.738, Std = 0.008
+  95% Confidence Interval: [0.727, 0.749]
+
+Model 8: {'embed_dim': 256, 'num_heads': 8, 'num_layers': 6}
+  Final Accuracy over 2 runs: Mean = 0.784, Std = 0.015
+  95% Confidence Interval: [0.764, 0.805]
+
+Model 9: {'embed_dim': 512, 'num_heads': 8, 'num_layers': 4}
+  Final Accuracy over 2 runs: Mean = 0.806, Std = 0.001
+  95% Confidence Interval: [0.805, 0.807]
+
+Model 10: {'embed_dim': 512, 'num_heads': 8, 'num_layers': 6}
+  Final Accuracy over 2 runs: Mean = 0.805, Std = 0.004
+  95% Confidence Interval: [0.799, 0.811]
+
