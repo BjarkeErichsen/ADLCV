@@ -1,3 +1,6 @@
+# Ignore .data directory (with the dot)
+.data/
+
 # Ignore everything inside any folder named 'adta'
 data/
 **/data/
