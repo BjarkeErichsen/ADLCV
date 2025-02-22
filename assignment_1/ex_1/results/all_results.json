@@ -1,0 +1,74 @@
+{
+    "0_run0": {
+        "config": {
+            "embed_dim": 128,
+            "num_heads": 4,
+            "num_layers": 4
+        },
+        "accuracies": [
+            0.507,
+            0.668,
+            0.691
+        ]
+    },
+    "0_run1": {
+        "config": {
+            "embed_dim": 128,
+            "num_heads": 4,
+            "num_layers": 4
+        },
+        "accuracies": [
+            0.553,
+            0.653,
+            0.732
+        ]
+    },
+    "1_run0": {
+        "config": {
+            "embed_dim": 256,
+            "num_heads": 4,
+            "num_layers": 4
+        },
+        "accuracies": [
+            0.648,
+            0.726,
+            0.77
+        ]
+    },
+    "1_run1": {
+        "config": {
+            "embed_dim": 256,
+            "num_heads": 4,
+            "num_layers": 4
+        },
+        "accuracies": [
+            0.573,
+            0.749,
+            0.765
+        ]
+    },
+    "2_run0": {
+        "config": {
+            "embed_dim": 128,
+            "num_heads": 8,
+            "num_layers": 4
+        },
+        "accuracies": [
+            0.505,
+            0.655,
+            0.678
+        ]
+    },
+    "2_run1": {
+        "config": {
+            "embed_dim": 128,
+            "num_heads": 8,
+            "num_layers": 4
+        },
+        "accuracies": [
+            0.549,
+            0.653,
+            0.725
+        ]
+    }
+}
