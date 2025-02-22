@@ -23,7 +23,7 @@ POS_ENC = "learnable"  # Options: learnable, fixed
 # Training
 START_FROM_PRETRAINED_GPT2_CHECKPOINT = True
 BATCH_SIZE = 3
-NUM_EPOCHS = 15
+NUM_EPOCHS = 5
 LR = 1e-4
 WARMUP_STEPS = 625
 WEIGHT_DECAY = 1e-4
