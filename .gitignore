@@ -8,3 +8,6 @@ data/
 
 # Do not ignore __pycache__ directories
 **/__pycache__/
+
+# Ignore checkpoints folder
+checkpoints/
