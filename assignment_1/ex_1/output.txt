@@ -1,0 +1,165 @@
+Model will run on cpu
+
+Training Model 1 Run 1/5: {'embed_dim': 128, 'num_heads': 4, 'num_layers': 4}
+Dataset size: 25000
+training: 4000 test: 1000
+
+Epoch 1/20
+-- Validation Accuracy after Epoch 1: 0.525
+
+Epoch 2/20
+-- Validation Accuracy after Epoch 2: 0.690
+
+Epoch 3/20
+-- Validation Accuracy after Epoch 3: 0.722
+
+Epoch 4/20
+-- Validation Accuracy after Epoch 4: 0.731
+
+Epoch 5/20
+-- Validation Accuracy after Epoch 5: 0.757
+
+Epoch 6/20
+-- Validation Accuracy after Epoch 6: 0.758
+
+Epoch 7/20
+-- Validation Accuracy after Epoch 7: 0.781
+
+Epoch 8/20
+-- Validation Accuracy after Epoch 8: 0.778
+
+Epoch 9/20
+-- Validation Accuracy after Epoch 9: 0.790
+
+Epoch 10/20
+-- Validation Accuracy after Epoch 10: 0.774
+
+Epoch 11/20
+-- Validation Accuracy after Epoch 11: 0.794
+
+Epoch 12/20
+-- Validation Accuracy after Epoch 12: 0.786
+
+Epoch 13/20
+-- Validation Accuracy after Epoch 13: 0.790
+
+Epoch 14/20
+-- Validation Accuracy after Epoch 14: 0.791
+
+Epoch 15/20
+-- Validation Accuracy after Epoch 15: 0.793
+
+Epoch 16/20
+-- Validation Accuracy after Epoch 16: 0.807
+
+Epoch 17/20
+-- Validation Accuracy after Epoch 17: 0.796
+
+Epoch 18/20
+-- Validation Accuracy after Epoch 18: 0.803
+
+Epoch 19/20
+-- Validation Accuracy after Epoch 19: 0.810
+
+Epoch 20/20
+-- Validation Accuracy after Epoch 20: 0.800
+
+Training Model 1 Run 2/5: {'embed_dim': 128, 'num_heads': 4, 'num_layers': 4}
+Dataset size: 25000
+training: 4000 test: 1000
+
+Epoch 1/20
+-- Validation Accuracy after Epoch 1: 0.593
+
+Epoch 2/20
+-- Validation Accuracy after Epoch 2: 0.689
+
+Epoch 3/20
+-- Validation Accuracy after Epoch 3: 0.753
+
+Epoch 4/20
+-- Validation Accuracy after Epoch 4: 0.731
+
+Epoch 5/20
+-- Validation Accuracy after Epoch 5: 0.797
+
+Epoch 6/20
+-- Validation Accuracy after Epoch 6: 0.776
+
+Epoch 7/20
+-- Validation Accuracy after Epoch 7: 0.781
+
+Epoch 8/20
+-- Validation Accuracy after Epoch 8: 0.796
+
+Epoch 9/20
+-- Validation Accuracy after Epoch 9: 0.809
+
+Epoch 10/20
+-- Validation Accuracy after Epoch 10: 0.815
+
+Epoch 11/20
+-- Validation Accuracy after Epoch 11: 0.799
+
+Epoch 12/20
+-- Validation Accuracy after Epoch 12: 0.803
+
+Epoch 13/20
+-- Validation Accuracy after Epoch 13: 0.777
+
+Epoch 14/20
+-- Validation Accuracy after Epoch 14: 0.808
+
+Epoch 15/20
+-- Validation Accuracy after Epoch 15: 0.821
+
+Epoch 16/20
+-- Validation Accuracy after Epoch 16: 0.821
+
+Epoch 17/20
+-- Validation Accuracy after Epoch 17: 0.826
+
+Epoch 18/20
+-- Validation Accuracy after Epoch 18: 0.830
+
+Epoch 19/20
+-- Validation Accuracy after Epoch 19: 0.822
+
+Epoch 20/20
+-- Validation Accuracy after Epoch 20: 0.822
+
+Training Model 1 Run 3/5: {'embed_dim': 128, 'num_heads': 4, 'num_layers': 4}
+Dataset size: 25000
+training: 4000 test: 1000
+
+Epoch 1/20
+-- Validation Accuracy after Epoch 1: 0.551
+
+Epoch 2/20
+-- Validation Accuracy after Epoch 2: 0.692
+
+Epoch 3/20
+-- Validation Accuracy after Epoch 3: 0.706
+
+Epoch 4/20
+-- Validation Accuracy after Epoch 4: 0.728
+
+Epoch 5/20
+-- Validation Accuracy after Epoch 5: 0.736
+
+Epoch 6/20
+-- Validation Accuracy after Epoch 6: 0.768
+
+Epoch 7/20
+-- Validation Accuracy after Epoch 7: 0.732
+
+Epoch 8/20
+-- Validation Accuracy after Epoch 8: 0.791
+
+Epoch 9/20
+-- Validation Accuracy after Epoch 9: 0.793
+
+Epoch 10/20
+-- Validation Accuracy after Epoch 10: 0.794
+
+Epoch 11/20

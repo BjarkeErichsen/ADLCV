@@ -4,7 +4,13 @@
 # Ignore everything inside any folder named 'adta'
 data/
 **/data/
-
+# ignore output and error files
+output/
+**/output/
+error/
+**/error/
+envcv/
+**/envcv/
 # Do not ignore .pth files
 *.pth
 **/*.pth

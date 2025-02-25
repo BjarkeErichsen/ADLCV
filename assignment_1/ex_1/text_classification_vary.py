@@ -11,9 +11,9 @@ from transformer import TransformerClassifier, to_device
 
 NUM_CLS = 2
 VOCAB_SIZE = 50_000
-SAMPLED_RATIO = 0.2
+SAMPLED_RATIO = 0.3
 MAX_SEQ_LEN = 512
-RESULTS_FILE = "results/all_results2.json"  
+RESULTS_FILE = "results/all_resultsauto_update3.json"  
 
 
 def set_seed(seed=1):
@@ -65,7 +65,7 @@ def save_results(config, accuracies, model_id):
 
 
 
-def train_and_evaluate(embed_dim, num_heads, num_layers, num_epochs=20, 
+def train_and_evaluate(embed_dim, num_heads, num_layers, num_epochs=10, 
                        pos_enc='fixed', pool='max', dropout=0.0, fc_dim=None,
                        batch_size=16, lr=1e-4, warmup_steps=625, 
                        weight_decay=1e-4, gradient_clipping=1, model_id=""):
@@ -126,8 +126,6 @@ def train_and_evaluate(embed_dim, num_heads, num_layers, num_epochs=20,
             print(f'-- Validation Accuracy after Epoch {e + 1}: {acc:.3f}')
 
     # Save accuracy per epoch for later visualization
-    save_results({"embed_dim": embed_dim, "num_heads": num_heads, "num_layers": num_layers}, epoch_accuracies, model_id)
-
     return epoch_accuracies
 
 if __name__ == "__main__":
@@ -137,7 +135,7 @@ if __name__ == "__main__":
 
     set_seed(seed=1) 
 
-    # Define different configurations for 12 models
+    # Define different configurations for 6 models
     model_configs = [
         # Embedding Dimension: 128
         {"embed_dim": 128, "num_heads": 4, "num_layers": 4},
@@ -158,16 +156,17 @@ if __name__ == "__main__":
         {"embed_dim": 512, "num_heads": 8, "num_layers": 6},
     ]
 
-    
-    num_runs = 5  # Number of runs per model
+    num_runs = 3  # Number of runs per model
 
     for idx, config in enumerate(model_configs):
         for run in range(num_runs):
             print(f"\nTraining Model {idx + 1} Run {run + 1}/{num_runs}: {config}")
-            
             set_seed(seed=run)  # Ensure different random states per run
-
-            accuracies = train_and_evaluate(**config, model_id=f"{idx}_run{run}")
+            try:
+                accuracies = train_and_evaluate(**config, model_id=f"{idx}_run{run}")
+                save_results(config, accuracies, model_id=f"{idx}_run{run}")
+            except Exception as e:
+                print(f"Error occurred for Model {idx + 1} Run {run + 1}: {e}")
 
     print("\nTraining completed. Results saved in JSON files.")
 
