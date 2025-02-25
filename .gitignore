@@ -9,6 +9,14 @@ output/
 **/output/
 error/
 **/error/
+
+# Ignore models
+models/ddpm
+**/models/ddpm
+# Ignore runs
+runs/ddpm
+**/runs/ddpm
+
 envcv/
 **/envcv/
 # Do not ignore .pth files
