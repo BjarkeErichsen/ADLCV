@@ -10,6 +10,10 @@ import torch
 import torchvision
 import torchvision.transforms as transforms
 from vit import ViT
+import pandas as pd
+import json
+results_file = "model_performance.csv"  # Change to .json if preferred
+all_results = []
 
 def set_seed(seed=1):
     random.seed(seed)
@@ -49,27 +53,31 @@ def prepare_dataloaders(batch_size, classes=[3, 7]):
 
     # reduce dataset size
     trainset, _ = torch.utils.data.random_split(trainset, [5000, 5000])
-    testset, _ = torch.utils.data.random_split(testset, [1000, 1000])
+    valset, testset = torch.utils.data.random_split(testset, [1000, 1000])
 
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size,
                                               shuffle=True
     )
+    valloader = torch.utils.data.DataLoader(valset, batch_size=batch_size,
+                                              shuffle=False
+    )
+
     testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size,
                                               shuffle=False
     )
-    return trainloader, testloader, trainset, testset
+    return trainloader, valloader, trainset, testset, testloader
 
 
 def main(image_size=(32,32), patch_size=(4,4), channels=3, 
          embed_dim=128, num_heads=4, num_layers=4, num_classes=2,
          pos_enc='learnable', pool='cls', dropout=0.3, fc_dim=None, 
          num_epochs=20, batch_size=16, lr=1e-4, warmup_steps=625,
-         weight_decay=1e-3, gradient_clipping=1
+         weight_decay=1e-3, gradient_clipping=1, model_name = "model.pth"
     ):
 
     loss_function = nn.CrossEntropyLoss()
 
-    train_iter, test_iter, _, _ = prepare_dataloaders(batch_size=batch_size)
+    train_iter, val_iter, _, _, test_iter = prepare_dataloaders(batch_size=batch_size)
     plot_attention = False
     model = ViT(image_size=image_size, patch_size=patch_size, channels=channels, 
                 embed_dim=embed_dim, num_heads=num_heads, num_layers=num_layers,
@@ -83,7 +91,10 @@ def main(image_size=(32,32), patch_size=(4,4), channels=3,
     opt = torch.optim.AdamW(lr=lr, params=model.parameters(), weight_decay=weight_decay)
     sch = torch.optim.lr_scheduler.LambdaLR(opt, lambda i: min(i / warmup_steps, 1.0))
 
+    global all_results  
+
     # training loop
+    counter = 0
     best_val_loss = 1e10
     for e in range(num_epochs):
         print(f'\n epoch {e}')
@@ -109,7 +120,7 @@ def main(image_size=(32,32), patch_size=(4,4), channels=3,
         with torch.no_grad():
             model.eval()
             tot, cor= 0.0, 0.0
-            for image, label in test_iter:
+            for image, label in val_iter:
                 if torch.cuda.is_available():
                     image, label = image.to('cuda'), label.to('cuda')
                 out = model(image)
@@ -119,16 +130,66 @@ def main(image_size=(32,32), patch_size=(4,4), channels=3,
                 tot += float(image.size(0))
                 cor += float((label == out).sum().item())
             acc = cor / tot
-            val_loss /= len(test_iter)
+            val_loss /= len(val_iter)
+
             print(f'-- train loss {train_loss:.3f} -- validation accuracy {acc:.3f} -- validation loss: {val_loss:.3f}')
             if val_loss <= best_val_loss:
-                torch.save(model.state_dict(), 'model.pth')
+                torch.save(model.state_dict(), model_name)
                 best_val_loss = val_loss
+                test_loss = 0
+                for image, label in test_iter:
+                    if torch.cuda.is_available():
+                        image, label = image.to('cuda'), label.to('cuda')
+                    out = model(image)
+                    loss = loss_function(out, label)
+                    val_loss += loss.item()
+                    out = out.argmax(dim=1)
+                    tot += float(image.size(0))
+                    cor += float((label == out).sum().item())
+                test_acc = cor / tot
+                test_loss /= len(test_iter)
 
+                all_results.append({
+                    "model_name": model_name,
+                    "validation_loss": val_loss,
+                    "validation_accuracy": acc,
+                    "test_loss": test_loss,
+                    "test_accuracy": test_acc,
+                    "epoch": e
+                })
+            else:
+                counter += 1
+                if counter >= 5:
+                    print("Validation loss did not improve for 5 consecutive epochs. Stopping training.")
+                    break
 
 if __name__ == "__main__":
     #os.environ["CUDA_VISIBLE_DEVICES"]= str(0)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  
     print(f"Model will run on {device}")
     set_seed(seed=1)
-    main()
+
+
+    # Define configurations
+    configs = [
+        {"embed_dim": 8, "num_layers": 1, "size_name": "tiny"},
+        {"embed_dim": 64, "num_layers": 2, "size_name": "small"},
+        {"embed_dim": 128, "num_layers": 4, "size_name": "medium"},
+        {"embed_dim": 256, "num_layers": 8, "size_name": "large"},
+    ]
+
+    patch_sizes = [(4,4), (8,8)]
+
+    # Train models with different configurations
+    for patch_size in patch_sizes:
+        for config in configs:
+            model_name = f"models/{config['size_name']}_patch_{patch_size[0]}.pth"
+            main(
+                patch_size=patch_size,
+                embed_dim=config["embed_dim"],
+                num_layers=config["num_layers"],
+                model_name=model_name,
+                num_epochs=400
+            )
+    df = pd.DataFrame(all_results)
+    df.to_csv(results_file, index=False)  # Save results as CSV

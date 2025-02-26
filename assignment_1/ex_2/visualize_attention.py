@@ -58,7 +58,7 @@ def prepare_dataloaders(batch_size, classes=[3, 7]):
 
 
 
-def compute_rollout_attention(attention_maps_tensor, discard_ratio=0.9):
+def compute_rollout_attention(attention_maps_tensor, discard_ratio=0.1):
     """
     Compute the rollout attention from attention maps across blocks and heads.
     
@@ -81,10 +81,19 @@ def compute_rollout_attention(attention_maps_tensor, discard_ratio=0.9):
     # Step 3: Iterate over blocks and recursively propagate attention
     for attention in averaged_attention_maps:
         # Flatten and discard low attention values (out-of-place operation)
-        flat = attention.flatten()  # Flatten to a 1D tensor
-        _, indices = torch.topk(flat, int(flat.size(0) * discard_ratio), largest=False)  # Get indices of low values
+        flat = attention.flatten()
+        num_discard = int(flat.size(0) * discard_ratio)
+
         attention_clone = attention.clone()  # Avoid in-place modifications
-        attention_clone.view(-1)[indices] = 0  # Set discarded values to zero
+
+        if num_discard > 0:
+            _, indices = torch.topk(flat, num_discard, largest=False)
+            attention_clone = attention_clone.view(-1).scatter(
+                dim=0, 
+                index=indices, 
+                value=0
+            ).view(attention_clone.size())
+
         
         # Add identity matrix (self-loops)
         I = torch.eye(attention_clone.size(-1), device='cpu')
@@ -101,6 +110,37 @@ def compute_rollout_attention(attention_maps_tensor, discard_ratio=0.9):
     cls_token_attention = cls_token_attention / cls_token_attention.max()  # Normalize to [0, 1]
     
     return cls_token_attention
+
+import cv2
+
+def visualize_attention_vit_style(attention, image):
+    attention_map = attention.reshape(8, 8)
+    
+    # Smoothly upscale to image size
+    attention_map_resized = cv2.resize(attention_map, (32, 32), interpolation=cv2.INTER_CUBIC)
+    attention_map_resized = attention_map_resized / attention_map_resized.max()
+    
+    image = image.cpu().numpy()
+    image = np.transpose(image.squeeze(), (1, 2, 0))
+    image = (image - image.min()) / (image.max() - image.min())
+
+    plt.figure(figsize=(12, 6))
+    
+    # Original image
+    plt.subplot(1, 2, 1)
+    plt.imshow(image)
+    plt.title("Original Image")
+    plt.axis("off")
+    
+    # Attention heatmap overlay (ViT-style)
+    plt.subplot(1, 2, 2)
+    plt.imshow(image)
+    plt.imshow(attention_map_resized, cmap='jet', alpha=0.5)
+    plt.title("Attention Overlay (ViT-style)")
+    plt.axis("off")
+    
+    plt.tight_layout()
+    plt.show()
 
 
 def visualize_attention_on_image(attention, image):
@@ -123,6 +163,8 @@ def visualize_attention_on_image(attention, image):
     # Step 4: Apply the attention to the image (scale pixel intensities)
     image = image.cpu().numpy()  # Convert image to numpy array, shape [3, 32, 32]
     image = np.transpose(image.squeeze(), (1, 2, 0))  # Change shape to [32, 32, 3] for visualization
+    image = (image - image.min()) / (image.max() - image.min())
+
     attention_applied_image = image * attention_map_32x32[:, :, None]  # Apply attention to all color channels
     
     # Step 5: Plot the original image and the attention-overlaid image
@@ -154,9 +196,9 @@ def visualize_attention_on_image(attention, image):
 
 
 def main(image_size=(32,32), patch_size=(4,4), channels=3, 
-         embed_dim=128, num_heads=4, num_layers=4, num_classes=2,
+         embed_dim=64, num_heads=4, num_layers=2, num_classes=2,
          pos_enc='learnable', pool='cls', dropout=0.3, fc_dim=None, 
-         num_epochs=20, batch_size=16, lr=1e-4, warmup_steps=625,
+         num_epochs=20, batch_size=1, lr=1e-4, warmup_steps=625,
          weight_decay=1e-3, gradient_clipping=1
          
     ):
@@ -170,7 +212,7 @@ def main(image_size=(32,32), patch_size=(4,4), channels=3,
                 num_classes=num_classes, plot_attention=True)
 
     # Load the trained weights
-    model.load_state_dict(torch.load('model.pth'))
+    model.load_state_dict(torch.load('models/large_patch_4.pth'))
 
     # Move the model to the appropriate device (GPU or CPU)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -189,6 +231,7 @@ def main(image_size=(32,32), patch_size=(4,4), channels=3,
         attention_array = attention_tensor.detach().numpy()
 
         visualize_attention_on_image(attention_array, image[0].unsqueeze(dim=0).cpu())
+        visualize_attention_vit_style(attention_array, image[0].unsqueeze(dim=0).cpu())
     print("Trained model loaded successfully!")
 
 if __name__ == "__main__":
