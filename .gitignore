@@ -1,7 +1,7 @@
 # Ignore .data directory (with the dot)
 .data/
 
-# Ignore everything inside any folder named 'adta'
+# Ignore everything inside any folder named 'data'
 data/
 **/data/
 # ignore output and error files
@@ -9,6 +9,20 @@ output/
 **/output/
 error/
 **/error/
+
+# Ignore venv folder
+venv/bin/
+**/venv/bin/
+venv/bin
+venv/lib/
+**/venv/lib/
+
+
+venv_ddpm/
+**/venv_ddpm/
+
+
+
 
 # Ignore models
 models/ddpm
@@ -19,11 +33,11 @@ runs/ddpm
 
 envcv/
 **/envcv/
-# Do not ignore .pth files
+# Ignore .pth files
 *.pth
 **/*.pth
 
-# Do not ignore __pycache__ directories
+# Ignore __pycache__ directories
 **/__pycache__/
 
 # Ignore checkpoints folder

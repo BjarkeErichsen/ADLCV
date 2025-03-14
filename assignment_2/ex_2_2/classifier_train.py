@@ -47,16 +47,33 @@ def train(device='cpu', T=500, img_size=16, input_channels=3, channels=32, time_
 
     for epoch in pbar:
         model.train()
+        running_loss = 0  # Initialize `running_loss`
         for images, labels in train_loader:
             images = images.to(device)
             labels = labels.to(device)
 
-            # Do not forget to noise your images !
+            # Add Noise to Images using Diffusion Process
+            timesteps = torch.randint(0, T, (images.shape[0],), device=device)  # Random timesteps
+            noisy_images, _ = diffusion.q_sample(images, timesteps)  # Apply noise
+            # noisy_images, _ = diffusion.forward_process(images, timesteps)  # Apply noise
 
-            ...
-    
-    # save your checkpoint in weights/classifier/model.pth
+            # Forward pass through classifier
+            optimizer.zero_grad()
+            logits = model(noisy_images, timesteps)
+            
+            # Compute loss
+            loss = loss_fn(logits, labels)
+            loss.backward()
+            optimizer.step()
+
+            running_loss += loss.item()
+
+        avg_loss = running_loss / len(train_loader)
+        pbar.set_description(f"Epoch {epoch}/{EPOCHS} - Loss: {avg_loss:.4f}")
+
+    # Save trained model
     torch.save(model.state_dict(), os.path.join("weights", exp_name, 'model.pth'))
+    print("Classifier model saved!")
 
 def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  
