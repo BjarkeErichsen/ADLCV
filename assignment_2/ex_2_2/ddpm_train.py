@@ -84,12 +84,15 @@ def train(T=500, cfg=True, img_size=16, input_channels=3, channels=32,
             # Do not forget randomly discard labels
             p_uncod = 0.1
 
-            ...
+            t = torch.randint(0, T, (images.shape[0],), device=device)
 
-            t = ...
-            x_t, noise = ...
-            predicted_noise = ...
-            loss = ...
+            x_t, noise = diffusion.q_sample(images, t) 
+            
+            mask = torch.rand(labels.shape[0], device=device) < p_uncod  # Create a mask of dropped labels
+            labels[mask] = -1  # Set dropped labels to a special token (-1 for ignored labels)
+
+            predicted_noise =  model(x_t, t, y=labels)
+            loss = mse(predicted_noise, noise)
 
             optimizer.zero_grad()
             loss.backward()
@@ -118,12 +121,10 @@ def train(T=500, cfg=True, img_size=16, input_channels=3, channels=32,
         sampled_images = diffusion.p_sample_loop(model, batch_size=images.shape[0], y=y)
         save_images(images=sampled_images, path=os.path.join("results", experiment_name, f"{epoch}.jpg"),
                     show=show, title=title)
-        
-
 
 def main():    
     parser = argparse.ArgumentParser()
-    parser.add_argument('--cfg', default=False, action='store_true')
+    parser.add_argument('--cfg', default=True, action='store_true')
     args = parser.parse_args()
     cfg = args.cfg
 

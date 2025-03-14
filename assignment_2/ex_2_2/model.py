@@ -137,11 +137,24 @@ class UNet(nn.Module):
         self.sa6 = SelfAttention(channels, img_size)
         self.outc = nn.Conv2d(channels, c_out, kernel_size=1)
 
+        
+
+
+        
+        
         if num_classes is not None:
+
+            self.num_classes = num_classes
+            
+            self.label_emb = nn.Sequential(
+                nn.Linear(num_classes, time_dim),  # Project one-hot input to time_dim
+                nn.GELU(),  # Activation function
+                nn.Linear(time_dim, time_dim)  # Second projection
+            )
+
             # Project one-hot encoded labels to the time embedding dimension 
             # Implement it as a 2-layer MLP with a GELU activation in-between
             # self.label_emb = ...
-            pass
             
 
     def forward(self, x, t, y=None):
@@ -150,8 +163,10 @@ class UNet(nn.Module):
         t = pos_encoding(t, self.time_dim, self.device)
 
         if y is not None:
-            # Add label and time embeddings together
-            pass
+            
+            y_embedded = self.label_emb(y)  # Shape: (B, time_dim)
+            t = t + y_embedded  # Inject class information into time embedding
+
             
         x1 = self.inc(x)
         x2 = self.down1(x1, t)

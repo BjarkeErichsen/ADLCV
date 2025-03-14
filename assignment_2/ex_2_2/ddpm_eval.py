@@ -52,8 +52,11 @@ def frechet_distance(mu1, sigma1, mu2, sigma2):
     # https://en.wikipedia.org/wiki/Fr%C3%A9chet_distance
     # HINT: https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.sqrtm.html
     # Implement FID score
+    mean_diff = np.sum((mu1 - mu2) ** 2)
 
-    fid = ...
+    cov_mean = linalg.sqrtm(sigma1 @ sigma2)
+
+    fid = mean_diff + np.trace(sigma1 + sigma2 - 2 * cov_mean)
 
     return fid
 
@@ -125,7 +128,6 @@ if __name__ == '__main__':
         generated_feat_cFg[start_idx:start_idx + original.shape[0]] = cFg_features
 
         start_idx = start_idx + original.shape[0]
-    
 
     mu_original, sigma_original = feature_statistics(original_feat)
     mu_cg, sigma_cg = feature_statistics(generated_feat_cg)
