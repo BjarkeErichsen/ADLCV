@@ -10,6 +10,10 @@ output/
 error/
 **/error/
 
+# ignore venv_ddpm
+venv_ddpm/
+**/venv_ddpm/
+
 # Ignore models
 models/ddpm
 **/models/ddpm
